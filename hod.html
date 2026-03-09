@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOD Dashboard- JITS</title>
+  <link rel="icon" type="image/png" href="hostlogo.png" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0f2027;
+      background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Faculty Data & Live Status */
+    const facultyList=[ {
+      initial: "JD", name: "John Doe"
+    }
+
+    ,
+    {
+    initial: "JS", name: "Jane Smith"
+    }
+
+    ,
+    {
+    initial: "RK", name: "Dr. R. Kumar"
+    }
+
+    ,
+    {
+    initial: "AS", name: "A. Sharma"
+    }
+
+    ,
+    {
+    initial: "MK", name: "M. Kapoor"
+    }
+
+    ];
+
+    function loadFacultyStatus() {
+      const container=document.querySelector(".faculty-grid");
+      const statusMap=JSON.parse(localStorage.getItem('facultyStatus') || '{}');
+      const now=Date.now();
+
+      container.innerHTML="";
+
+      facultyList.forEach(fac=> {
+          const lastSeen=statusMap[fac.name];
+          // Online if seen in last 15 seconds
+          const isOnline=lastSeen && (now - lastSeen < 15000);
+
+          const color=isOnline ? "#2ecc71" : "#95a5a6";
+          const text=isOnline ? "● Online" : "● Offline";
+          const avatarColor=isOnline ? "linear-gradient(135deg, #1fa2ff, #12d8fa)" : "linear-gradient(135deg, #bdc3c7, #2c3e50)";
+
+          const div=document.createElement("div");
+          div.className="faculty-card";
+
+          div.innerHTML=` <div class="faculty-avatar" style="background: ${avatarColor}" >$ {
+            fac.initial
+          }
+
+          </div> <div class="faculty-info" > <h4>$ {
+            fac.name
+          }
+
+          </h4> <span class="faculty-status" style="color: ${color}" >$ {
+            text
+          }
+
+          </span> </div> `;
+          container.appendChild(div);
+        });
+    }
+
+    // Refresh status every 3 seconds
+    setInterval(loadFacultyStatus, 3000);
+    loadFacultyStatus();
+
+    /* Check User Login */
+    .app-header {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-brand h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #fff, #4facfe);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logout-btn {
+      padding: 8px 20px;
+      background: rgba(255, 59, 59, 0.1);
+      border: 1px solid rgba(255, 59, 59, 0.3);
+      color: #ff6b6b;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 59, 59, 0.2);
+      box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+    }
+
+    /* Dashboard Container */
+    .container {
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 2.5fr 1fr;
+      gap: 25px;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Glass Card Standard */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      margin-bottom: 25px;
+      transition: transform 0.3s;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(79, 172, 254, 0.3);
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      color: #4facfe;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Faculty Status Section */
+    .faculty-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .faculty-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .faculty-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1fa2ff, #12d8fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .faculty-info h4 {
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .faculty-status {
+      font-size: 11px;
+      color: #2ecc71;
+    }
+
+    /* Attendance Section (Compact) */
+    .attendance-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .attendance-table th,
+    .attendance-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .attendance-table th {
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    /* Messages Section */
+    .message-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .message-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .message-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .message-item {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      border-left: 3px solid #4facfe;
+      transition: background 0.2s;
+    }
+
+    .message-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .msg-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .msg-sender {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .msg-preview {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Calendar Widget */
+    .calendar-widget {
+      text-align: center;
+    }
+
+    .cal-header {
+      background: linear-gradient(90deg, #1fa2ff, #12d8fa);
+      padding: 15px;
+      border-radius: 12px 12px 0 0;
+      font-weight: 700;
+    }
+
+    .cal-body {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: 0 0 12px 12px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .cal-day {
+      padding: 5px;
+    }
+
+    .cal-today {
+      background: #4facfe;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: #1e3c72;
+      width: 90%;
+      max-width: 500px;
+      padding: 30px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-close {
+      float: right;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="particles-js"></div>
+
+  <header class="app-header">
+    <div class="header-brand">
+      <h1>🎓 HOD Dashboard</h1>
+    </div>
+    <button class="logout-btn" onclick="window.location.href='index.html'">Logout</button>
+  </header>
+
+  <div class="container">
+
+    <!-- Left Column -->
+    <div class="main-content">
+
+      <!-- Faculty Status -->
+      <div class="glass-card">
+        <h2 class="section-title">Faculty Status</h2>
+        <div class="faculty-grid">
+          <div class="faculty-card">
+            <div class="faculty-avatar">JD</div>
+            <div class="faculty-info">
+              <h4>John Doe</h4>
+              <span class="faculty-status">● Online</span>
+            </div>
+          </div>
+          <div class="faculty-card">
+            <div class="faculty-avatar">JS</div>
+            <div class="faculty-info">
+              <h4>Jane Smith</h4>
+              <span class="faculty-status">● Online</span>
+            </div>
+          </div>
+          <div class="faculty-card">
+            <div class="faculty-avatar">RK</div>
+            <div class="faculty-info">
+              <h4>Dr. R. Kumar</h4>
+              <span class="faculty-status" style="color: #f1c40f">● Away</span>
+            </div>
+          </div>
+          <div class="faculty-card">
+            <div class="faculty-avatar">AS</div>
+            <div class="faculty-info">
+              <h4>A. Sharma</h4>
+              <span class="faculty-status">● Online</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance Overview -->
+      <div class="glass-card">
+        <h2 class="section-title">📊 Recent Attendance Submissions</h2>
+        <div id="attendanceContainer">
+          <!-- Loaded via JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column -->
+    <div class="side-panel">
+
+      <!-- Calendar -->
+      <div class="glass-card" style="padding: 0;">
+        <div class="calendar-widget">
+          <div class="cal-header">January 2026</div>
+          <div class="cal-body">
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            <span></span><span></span><span></span><span></span><span>1</span><span>2</span><span>3</span>
+            <span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+            <span>11</span><span
+              class="cal-today">12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Inbox -->
+      <div class="glass-card">
+        <h2 class="section-title">📨 Inbox <span style="font-size: 12px; margin-left: auto; color: #ccc;"
+            id="msgCount">0 New</span></h2>
+        <div class="message-list" id="messageList">
+          <div style="text-align: center; color: rgba(255,255,255,0.4); padding: 20px;">No messages</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Message Detail Modal -->
+  <div class="modal-overlay" id="msgModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeMsgModal()">×</button>
+      <h2 id="modalSender" style="margin-bottom: 5px;">Sender</h2>
+      <p id="modalDate" style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 20px;">Date</p>
+      <p id="modalType" style="color: #4facfe; font-weight: 600; margin-bottom: 10px;">Type</p>
+      <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; min-height: 100px;">
+        <p id="modalContent" style="white-space: pre-wrap; line-height: 1.5;">Content</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Detail Modal -->
+  <div class="modal-overlay" id="attendanceModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeAttendanceModal()">×</button>
+      <h2 id="attModalTitle" style="margin-bottom: 5px;">Attendance Details</h2>
+      <p id="attModalSubtitle" style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 20px;">Section -
+        Date</p>
+
+      <div
+        style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; max-height: 300px; overflow-y: auto;">
+        <ul id="attStudentList" style="list-style: none; padding: 0;">
+          <!-- List Items -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Load Attendance */
+    /* Load Attendance */
+    let globalAttendanceRecords = [];
+
+    function loadAttendance() {
+      const data = JSON.parse(localStorage.getItem("attendanceRecords") || "[]");
+      globalAttendanceRecords = data; // Store globally
+      const container = document.getElementById("attendanceContainer");
+
+      if (data.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: rgba(255,255,255,0.5); padding: 20px;">No attendance records found.</p>';
+        return;
+      }
+
+      let html = '<table class="attendance-table"><thead><tr><th>Section</th><th>Date</th><th>Present</th><th>Absent</th></tr></thead><tbody>';
+
+      data.slice(0, 5).forEach((record, index) => { // Show last 5
+        let presentCount = record.attendance.filter(r => r.status === "Present").length;
+        let absentCount = record.attendance.filter(r => r.status !== "Present").length;
+
+        html += `
+            <tr>
+                <td style="font-weight: 600; color: #fff;">${record.section}</td>
+                <td>${record.dateTime.split(',')[0]}</td>
+                <td>
+                    <span style="color: #2ecc71; cursor: pointer; text-decoration: underline;" 
+                          onclick="showAttendanceDetails(${index}, 'Present')">${presentCount}</span>
+                </td>
+                <td>
+                    <span style="color: #ff6347; cursor: pointer; text-decoration: underline;" 
+                          onclick="showAttendanceDetails(${index}, 'Absent')">${absentCount}</span>
+                </td>
+            </tr>
+          `;
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function showAttendanceDetails(index, type) {
+      const record = globalAttendanceRecords[index];
+      if (!record) return;
+
+      const filteredStudents = record.attendance.filter(r =>
+        type === 'Present' ? r.status === 'Present' : r.status !== 'Present'
+      );
+
+      document.getElementById("attModalTitle").textContent = `${type} Students`;
+      document.getElementById("attModalSubtitle").textContent = `${record.section} - ${record.dateTime}`;
+
+      const list = document.getElementById("attStudentList");
+      list.innerHTML = "";
+
+      if (filteredStudents.length === 0) {
+        list.innerHTML = `<li style="text-align: center; color: rgba(255,255,255,0.5); padding: 10px;">No students ${type.toLowerCase()}</li>`;
+      } else {
+        filteredStudents.forEach(student => {
+          const li = document.createElement("li");
+          li.style.padding = "8px";
+          li.style.borderBottom = "1px solid rgba(255,255,255,0.05)";
+          li.style.color = "rgba(255,255,255,0.9)";
+          li.textContent = student.name;
+          list.appendChild(li);
+        });
+      }
+
+      document.getElementById("attendanceModal").classList.add("active");
+    }
+
+    function closeAttendanceModal() {
+      document.getElementById("attendanceModal").classList.remove("active");
+    }
+
+    /* Load Messages */
+    let globalMessages = [];
+
+    function loadMessages() {
+      try {
+        const messages = JSON.parse(localStorage.getItem("hodMessages") || "[]");
+        globalMessages = messages;
+        document.getElementById("msgCount").textContent = `${messages.length} New`;
+
+        const list = document.getElementById("messageList");
+
+        if (messages.length === 0) {
+          list.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.4); padding: 20px;">No messages</div>';
+          return;
+        }
+
+        let html = "";
+        messages.forEach(msg => {
+          html += `
+                    <div class="message-item" onclick="openMsgById(${msg.id})">
+                        <div class="msg-header">
+                            <span class="msg-sender">${msg.sender}</span>
+                            <span>${msg.date.split(',')[0]}</span>
+                        </div>
+                        <div class="msg-preview">
+                            <span style="color: #4facfe;">[${msg.type}]</span> ${msg.content}
+                        </div>
+                    </div>
+                `;
+        });
+
+        if (list.innerHTML !== html) {
+          list.innerHTML = html;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function openMsgById(id) {
+      const msg = globalMessages.find(m => m.id === id);
+      if (!msg) return;
+
+      document.getElementById("modalSender").textContent = msg.sender;
+      document.getElementById("modalDate").textContent = msg.date;
+      document.getElementById("modalType").textContent = msg.type;
+      document.getElementById("modalContent").textContent = msg.content;
+      document.getElementById("msgModal").classList.add("active");
+    }
+
+    // Polling for new messages
+    setInterval(loadMessages, 2000);
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'hodMessages') loadMessages();
+    });
+
+    function closeMsgModal() {
+      document.getElementById("msgModal").classList.remove("active");
+    }
+
+    loadAttendance();
+    loadMessages();
+
+    /* Particles Config */
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#ffffff" },
+        "opacity": { "value": 0.3, "random": true },
+        "size": { "value": 3, "random": true },
+        "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.2, "width": 1 },
+        "move": { "enable": true, "speed": 1 }
+      },
+      "interactivity": {
+        "events": { "onhover": { "enable": true, "mode": "bubble" } },
+        "modes": { "bubble": { "distance": 200, "size": 6, "duration": 2, "opacity": 0.8 } }
+      }
+    });
+  </script>
+</body>
+
+</html>

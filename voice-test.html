@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Input Test - JITS Campus</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .test-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-header h1 {
+            color: #2d89ef;
+            margin-bottom: 10px;
+        }
+
+        .test-header p {
+            color: #666;
+            margin: 0;
+        }
+
+        .voice-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .voice-btn {
+            background: #2d89ef;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 150px;
+            justify-content: center;
+        }
+
+        .voice-btn:hover {
+            background: #1b6fc2;
+            transform: translateY(-2px);
+        }
+
+        .voice-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .voice-btn.listening {
+            background: #ff4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .status-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 100px;
+        }
+
+        .status-display h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+
+        .status-text {
+            color: #666;
+            font-family: monospace;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .input-area {
+            margin-bottom: 20px;
+        }
+
+        .input-area label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .input-area input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .input-area input:focus {
+            outline: none;
+            border-color: #2d89ef;
+        }
+
+        .test-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .test-btn:hover {
+            background: #218838;
+        }
+
+        .browser-info {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .browser-info h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .browser-info ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #666;
+        }
+
+        .browser-info li {
+            margin-bottom: 5px;
+        }
+
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .success {
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🎤 Voice Input Test</h1>
+            <p>Test and debug voice input functionality for JITS Campus Chatbot</p>
+        </div>
+
+        <div class="status-display">
+            <h3>Status & Debug Info</h3>
+            <div id="status-text" class="status-text">Initializing voice recognition...</div>
+        </div>
+
+        <div class="voice-controls">
+            <button id="start-btn" class="voice-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                    <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                </svg>
+                Start Listening
+            </button>
+            <button id="stop-btn" class="voice-btn" disabled>
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M6 6h12v12H6z"/>
+                </svg>
+                Stop Listening
+            </button>
+            <button id="test-speech-btn" class="voice-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+                Test Speech
+            </button>
+        </div>
+
+        <div class="input-area">
+            <label for="test-input">Recognized Text:</label>
+            <input type="text" id="test-input" placeholder="Voice input will appear here..." readonly>
+        </div>
+
+        <button id="test-chatbot-btn" class="test-btn">Test with Chatbot</button>
+
+        <div class="browser-info">
+            <h4>Browser Compatibility & Requirements:</h4>
+            <ul>
+                <li><strong>HTTPS Required:</strong> Voice recognition only works on secure connections</li>
+                <li><strong>Chrome/Edge:</strong> Best support for Web Speech API</li>
+                <li><strong>Firefox:</strong> Limited support, may not work</li>
+                <li><strong>Safari:</strong> No support for speech recognition</li>
+                <li><strong>Microphone Permission:</strong> Browser will ask for microphone access</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        class VoiceTest {
+            constructor() {
+                this.recognition = null;
+                this.synthesis = window.speechSynthesis;
+                this.isListening = false;
+                this.statusText = document.getElementById('status-text');
+                this.testInput = document.getElementById('test-input');
+                this.startBtn = document.getElementById('start-btn');
+                this.stopBtn = document.getElementById('stop-btn');
+                this.testSpeechBtn = document.getElementById('test-speech-btn');
+                this.testChatbotBtn = document.getElementById('test-chatbot-btn');
+                
+                this.init();
+                this.setupEventListeners();
+            }
+
+            init() {
+                this.updateStatus('Checking browser compatibility...');
+                
+                // Check if we're on HTTPS
+                if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                    this.updateStatus('❌ ERROR: Voice recognition requires HTTPS connection!\n\nPlease access this page via HTTPS or localhost.', 'error');
+                    this.disableButtons();
+                    return;
+                }
+
+                // Check for speech recognition support
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                    this.updateStatus('❌ ERROR: Speech recognition not supported in this browser!\n\nSupported browsers:\n• Google Chrome\n• Microsoft Edge\n• Opera\n\nNot supported:\n• Firefox\n• Safari', 'error');
+                    this.disableButtons();
+                    return;
+                }
+
+                // Initialize speech recognition
+                try {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    this.recognition.maxAlternatives = 1;
+
+                    this.setupRecognitionEvents();
+                    this.updateStatus('✅ Voice recognition initialized successfully!\n\nReady to test voice input.\nClick "Start Listening" to begin.', 'success');
+                    
+                } catch (error) {
+                    this.updateStatus(`❌ ERROR: Failed to initialize speech recognition:\n${error.message}`, 'error');
+                    this.disableButtons();
+                }
+            }
+
+            setupRecognitionEvents() {
+                this.recognition.onstart = () => {
+                    this.isListening = true;
+                    this.updateStatus('🎤 Listening... Speak now!\n\nSay something like:\n• "What are the exam dates?"\n• "Tell me about fees"\n• "Show academic calendar"', 'success');
+                    this.updateButtons();
+                };
+
+                this.recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    this.testInput.value = transcript;
+                    this.updateStatus(`✅ Recognized: "${transcript}"\n\nConfidence: ${(event.results[0][0].confidence * 100).toFixed(1)}%`, 'success');
+                };
+
+                this.recognition.onerror = (event) => {
+                    this.isListening = false;
+                    let errorMessage = '❌ Speech recognition error:\n';
+                    
+                    switch(event.error) {
+                        case 'no-speech':
+                            errorMessage += 'No speech detected. Please try again.';
+                            break;
+                        case 'audio-capture':
+                            errorMessage += 'No microphone found. Please check your microphone.';
+                            break;
+                        case 'not-allowed':
+                            errorMessage += 'Microphone permission denied. Please allow microphone access.';
+                            break;
+                        case 'network':
+                            errorMessage += 'Network error. Please check your internet connection.';
+                            break;
+                        default:
+                            errorMessage += event.error;
+                    }
+                    
+                    this.updateStatus(errorMessage, 'error');
+                    this.updateButtons();
+                };
+
+                this.recognition.onend = () => {
+                    this.isListening = false;
+                    this.updateStatus('🛑 Listening stopped.\n\nClick "Start Listening" to try again.', 'success');
+                    this.updateButtons();
+                };
+            }
+
+            setupEventListeners() {
+                this.startBtn.addEventListener('click', () => this.startListening());
+                this.stopBtn.addEventListener('click', () => this.stopListening());
+                this.testSpeechBtn.addEventListener('click', () => this.testSpeechOutput());
+                this.testChatbotBtn.addEventListener('click', () => this.testWithChatbot());
+            }
+
+            startListening() {
+                if (this.recognition) {
+                    try {
+                        this.recognition.start();
+                    } catch (error) {
+                        this.updateStatus(`❌ Error starting recognition: ${error.message}`, 'error');
+                    }
+                }
+            }
+
+            stopListening() {
+                if (this.recognition && this.isListening) {
+                    this.recognition.stop();
+                }
+            }
+
+            testSpeechOutput() {
+                const testText = "Hello! This is a test of the speech synthesis feature. Voice input is working correctly.";
+                
+                if (this.synthesis) {
+                    const utterance = new SpeechSynthesisUtterance(testText);
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1;
+                    
+                    utterance.onstart = () => {
+                        this.updateStatus('🔊 Speaking test message...', 'success');
+                    };
+                    
+                    utterance.onend = () => {
+                        this.updateStatus('✅ Speech synthesis test completed!\n\nVoice output is working correctly.', 'success');
+                    };
+                    
+                    this.synthesis.speak(utterance);
+                } else {
+                    this.updateStatus('❌ Speech synthesis not supported in this browser.', 'error');
+                }
+            }
+
+            testWithChatbot() {
+                const recognizedText = this.testInput.value.trim();
+                if (!recognizedText) {
+                    this.updateStatus('❌ No text to test! Please use voice input first.', 'error');
+                    return;
+                }
+
+                // Simulate chatbot response
+                this.updateStatus(`🤖 Testing with chatbot...\n\nUser: "${recognizedText}"\n\nProcessing...`, 'success');
+                
+                setTimeout(() => {
+                    let response = "I understand you said: " + recognizedText + "\n\nThis would be processed by the chatbot.";
+                    this.updateStatus(`🤖 Chatbot Response:\n\n${response}`, 'success');
+                }, 2000);
+            }
+
+            updateStatus(message, type = 'info') {
+                this.statusText.textContent = message;
+                this.statusText.className = 'status-text';
+                
+                if (type === 'error') {
+                    this.statusText.style.color = '#dc3545';
+                } else if (type === 'success') {
+                    this.statusText.style.color = '#155724';
+                } else {
+                    this.statusText.style.color = '#666';
+                }
+            }
+
+            updateButtons() {
+                if (this.isListening) {
+                    this.startBtn.disabled = true;
+                    this.startBtn.classList.add('listening');
+                    this.stopBtn.disabled = false;
+                } else {
+                    this.startBtn.disabled = false;
+                    this.startBtn.classList.remove('listening');
+                    this.stopBtn.disabled = true;
+                }
+            }
+
+            disableButtons() {
+                this.startBtn.disabled = true;
+                this.stopBtn.disabled = true;
+                this.testSpeechBtn.disabled = true;
+                this.testChatbotBtn.disabled = true;
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new VoiceTest();
+        });
+    </script>
+</body>
+</html> 

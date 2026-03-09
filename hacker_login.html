@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM ACCESS // LOGIN</title>
+    <style>
+        :root {
+            --terminal-green: #0f0;
+            --terminal-glow: #0f0;
+            --terminal-bg: #000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--terminal-bg);
+            color: var(--terminal-green);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    rgba(255, 255, 255, 0),
+                    rgba(255, 255, 255, 0) 50%,
+                    rgba(0, 0, 0, 0.2) 50%,
+                    rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .crt-flicker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 16, 16, 0.1);
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0% {
+                opacity: 0.02;
+            }
+
+            50% {
+                opacity: 0.05;
+            }
+
+            100% {
+                opacity: 0.02;
+            }
+        }
+
+        .terminal-window {
+            position: relative;
+            z-index: 1;
+            width: 500px;
+            max-width: 90%;
+            background: rgba(0, 20, 0, 0.9);
+            border: 2px solid var(--terminal-green);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            padding: 2rem;
+            border-radius: 5px;
+        }
+
+        .terminal-header {
+            border-bottom: 1px solid var(--terminal-green);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--terminal-glow);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--terminal-green);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 5px var(--terminal-glow);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .prompt {
+            color: var(--terminal-green);
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #005500;
+            color: var(--terminal-green);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            width: 100%;
+            padding: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-bottom: 1px solid var(--terminal-green);
+            box-shadow: 0 4px 8px -5px rgba(0, 255, 0, 0.3);
+        }
+
+        .login-btn {
+            background: transparent;
+            color: var(--terminal-green);
+            border: 1px solid var(--terminal-green);
+            padding: 10px 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            background: var(--terminal-green);
+            color: black;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .hidden-msg {
+            display: none;
+            margin-top: 15px;
+            color: var(--terminal-green);
+            text-align: center;
+        }
+
+        .glitch-text {
+            position: relative;
+        }
+
+        /* Typing cursor effect */
+        .typing-effect::after {
+            content: '█';
+            animation: blink-cursor 1s step-end infinite;
+        }
+
+        @keyframes blink-cursor {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scanline"></div>
+    <div class="crt-flicker"></div>
+    <canvas id="matrix"></canvas>
+
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <span>SECURE LOGIN v2.4</span>
+            <span class="status-dot"></span>
+        </div>
+
+        <div id="boot-sequence" style="margin-bottom: 20px; min-height: 60px;">
+            <!-- JS will populate this -->
+        </div>
+
+        <form id="loginForm" style="display: none;">
+            <div class="input-group">
+                <div><span class="prompt">></span>ENTER USERNAME:</div>
+                <input type="text" id="username" autocomplete="off" required>
+            </div>
+            <div class="input-group">
+                <div><span class="prompt">></span>ENTER PASSWORD:</div>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="login-btn">
+                [ INITIATE CONNECTION ]
+            </button>
+        </form>
+
+        <div id="access-msg" class="hidden-msg">
+            ACCESS GRANTED.<br>REDIRECTING TO MAINFRAME...
+        </div>
+        <div id="error-msg" class="hidden-msg" style="color: #ff3333; text-shadow: 0 0 5px red;">
+            ACCESS DENIED. INVALID CREDENTIALS.
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Background
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const alphabet = katakana.split('');
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = alphabet[Math.floor(Math.random() * alphabet.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 33);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Boot Sequence Simulation
+        const bootText = document.getElementById('boot-sequence');
+        const loginForm = document.getElementById('loginForm');
+        const lines = [
+            "Initializing secure protocol...",
+            "Loading encryption modules...",
+            "Establishing connection to server...",
+            "Connection verified.",
+            "Please authenticate."
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+        let currentLine = document.createElement('div');
+        bootText.appendChild(currentLine);
+
+        function typeLine() {
+            if (lineIndex < lines.length) {
+                if (charIndex < lines[lineIndex].length) {
+                    currentLine.textContent += lines[lineIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeLine, Math.random() * 50 + 20);
+                } else {
+                    currentLine.classList.add('finished');
+                    lineIndex++;
+                    charIndex = 0;
+                    currentLine = document.createElement('div');
+                    bootText.appendChild(currentLine);
+                    setTimeout(typeLine, 200);
+                }
+            } else {
+                loginForm.style.display = 'block';
+                document.getElementById('username').focus();
+            }
+        }
+
+        setTimeout(typeLine, 500);
+
+        // Login Handler
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = document.querySelector('.login-btn');
+            const originalText = btn.innerText;
+
+            btn.innerText = "AUTHENTICATING...";
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
+
+            // Simulate network request
+            setTimeout(() => {
+                const user = document.getElementById('username').value;
+                const pass = document.getElementById('password').value;
+
+                // Simple validation for demo
+                if (user && pass) {
+                    document.getElementById('access-msg').style.display = 'block';
+                    document.getElementById('error-msg').style.display = 'none';
+                    loginForm.style.display = 'none';
+                    bootText.style.display = 'none';
+
+                    // Here you would redirect, e.g.:
+                    // window.location.href = 'index.html'; 
+                } else {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                    document.getElementById('error-msg').style.display = 'block';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

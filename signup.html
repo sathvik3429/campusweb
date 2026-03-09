@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up - JITS</title>
+  <link rel="icon" type="image/png" href="hostlogo.png" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0f2027;
+      background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Particle background */
+    #particles-js {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    /* Floating 27 Years Logo */
+    .floating-logo {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      width: 100px;
+      z-index: 10;
+      animation: float 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
+
+      100% {
+        transform: translateY(0px);
+      }
+    }
+
+    /* Main Container */
+    .signup-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 480px;
+      padding: 20px;
+    }
+
+    /* Glassmorphism Box */
+    .signup-box {
+      background: rgba(255, 255, 255, 0.05);
+      /* Very transparent */
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      text-align: center;
+      transition: transform 0.3s ease;
+      animation: slideInRight 0.8s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideOutRight {
+      to {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+    }
+
+    .slide-out-right {
+      animation: slideOutRight 0.5s forwards;
+    }
+
+    .signup-box:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .logo-area {
+      margin-bottom: 30px;
+    }
+
+    .logo-area img {
+      max-width: 180px;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    }
+
+    /* Role Toggles */
+    .role-select {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      padding: 5px;
+      display: flex;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      position: relative;
+      z-index: 2;
+      transition: color 0.3s;
+      border-radius: 8px;
+    }
+
+    .role-btn.active {
+      color: #fff;
+    }
+
+    .role-highlight {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: calc(33.33% - 5px);
+      height: calc(100% - 10px);
+      background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+      border-radius: 8px;
+      transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      z-index: 1;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    }
+
+    /* Dynamic Label */
+    .role-label {
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Inputs */
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+      text-align: left;
+    }
+
+    .input-field {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      color: #fff;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .input-field:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #4facfe;
+      box-shadow: 0 0 15px rgba(79, 172, 254, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* OTP Inputs */
+    .otp-section {
+      margin-top: 25px;
+      margin-bottom: 30px;
+    }
+
+    .otp-label {
+      display: block;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .otp-container {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .otp-digit {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 24px;
+      text-align: center;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .otp-digit:focus {
+      border-color: #00f2fe;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+      transform: scale(1.1);
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      transition: 0.3s;
+      z-index: 1;
+    }
+
+    /* Live Lighting Effect */
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 300%;
+      height: 100%;
+      background: linear-gradient(90deg,
+          #2196f3, #00f2fe, #2196f3, #00f2fe);
+      transition: all 0.5s ease;
+      z-index: -1;
+      background-size: 200% auto;
+      animation: glowing 3s linear infinite;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes glowing {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .signup-box {
+        padding: 25px;
+      }
+
+      .role-label {
+        font-size: 20px;
+      }
+
+      .otp-digit {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Particles -->
+  <div id="particles-js"></div>
+
+  <!-- Animated Logo -->
+  <img src="27-years-logo.png" alt="27 Years" class="floating-logo" />
+
+  <div class="signup-container">
+    <div class="signup-box">
+
+      <div class="logo-area">
+        <!-- Using a white version of logo if possible, or filter -->
+        <img src="jits_logo1.png" alt="JITS Campus"
+          style="background: rgba(255,255,255,0.9); padding: 5px; border-radius: 8px;">
+      </div>
+
+      <div class="role-select">
+        <div class="role-highlight" id="highlight"></div>
+        <button class="role-btn active" onclick="switchRole('Teacher')">Teacher</button>
+        <button class="role-btn" onclick="switchRole('HOD')">HOD</button>
+        <button class="role-btn" onclick="switchRole('Admin')">Admin</button>
+      </div>
+
+      <h2 class="role-label" id="roleLabel">Teacher Portal</h2>
+
+      <form onsubmit="handleSignup(event)">
+        <div class="input-group">
+          <input type="text" id="name" class="input-field" placeholder="Full Name" required autocomplete="off" />
+        </div>
+
+        <div class="input-group">
+          <input type="text" id="email" class="input-field" placeholder="Staff/Admin ID" required autocomplete="off" />
+        </div>
+
+        <div class="otp-section">
+          <label class="otp-label">Security PIN</label>
+          <div class="otp-container">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+            <input type="text" class="otp-digit" maxlength="1" inputmode="numeric">
+          </div>
+          <input type="hidden" id="password">
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          Access Dashboard
+        </button>
+      </form>
+
+      <a href="Login.html" style="
+        margin-top: 20px;
+        display: block;
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
+      " onmouseover="this.style.color='#fff'; this.style.textDecoration='underline'"
+        onmouseout="this.style.color='rgba(255, 255, 255, 0.6)'; this.style.textDecoration='none'"
+        onclick="navigateToLogin(event)">
+        Already have an account? <strong>Log In</strong>
+      </a>
+
+    </div>
+  </div>
+
+  <script>
+    /* Role Switching Logic */
+    let currentRole = "Teacher";
+
+    function navigateToLogin(e) {
+      e.preventDefault();
+      const box = document.querySelector('.signup-box');
+      box.classList.add('slide-out-right');
+      setTimeout(() => {
+        window.location.href = 'Login.html';
+      }, 500);
+    }
+
+    const highlight = document.getElementById('highlight');
+    const roleBtns = document.querySelectorAll('.role-btn');
+    const roleLabel = document.getElementById('roleLabel');
+
+    function switchRole(role) {
+      currentRole = role;
+
+      // Reset all active classes
+      roleBtns.forEach(btn => btn.classList.remove('active'));
+
+      // Update toggle UI
+      if (role === 'Teacher') {
+        highlight.style.width = '33.33%';
+        highlight.style.transform = 'translateX(0)';
+        roleBtns[0].classList.add('active');
+        roleLabel.textContent = "Teacher Portal";
+      } else if (role === 'HOD') {
+        highlight.style.width = '33.33%';
+        highlight.style.transform = 'translateX(100%)';
+        roleBtns[1].classList.add('active');
+        roleLabel.textContent = "HOD Access";
+      } else {
+        highlight.style.width = '33.33%';
+        highlight.style.transform = 'translateX(200%)';
+        roleBtns[2].classList.add('active');
+        roleLabel.textContent = "Admin Control";
+      }
+    }
+
+    /* Signup Handler */
+    function handleSignup(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      // Check for existing user
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const existingUser = users.find(u => u.email === email);
+
+      if (existingUser) {
+        alert("Account already exists with this Staff ID! Please log in.");
+        return;
+      }
+
+      // Collect PIN
+      const digits = document.querySelectorAll('.otp-digit');
+      let pin = '';
+      digits.forEach(d => pin += d.value);
+
+      if (pin.length < 4) {
+        alert("Please enter a complete 4-digit PIN");
+        return;
+      }
+
+
+      users.push({ role: currentRole, name, email, password: pin });
+      localStorage.setItem("users", JSON.stringify(users));
+
+      // Simulate loading/success
+      const btn = document.getElementById('submitBtn');
+      const originalText = btn.innerText;
+      btn.innerHTML = 'Authenticating...';
+
+      setTimeout(() => {
+        alert(`Welcome, ${name}! Redirecting...`);
+        window.location.href = "Login.html";
+      }, 800);
+    }
+
+    /* OTP Logic */
+    const inputs = document.querySelectorAll('.otp-digit');
+    inputs.forEach((input, index) => {
+      // Auto-focus next
+      input.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, ''); // Numbers only
+        if (this.value.length >= 1) {
+          if (index < inputs.length - 1) inputs[index + 1].focus();
+        }
+      });
+
+      // Backspace nav
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !this.value) {
+          if (index > 0) inputs[index - 1].focus();
+        }
+      });
+
+      // Masking effect (simple visual)
+      input.addEventListener('blur', function () {
+        if (this.value) {
+          this.type = 'password'; // Mask after leaving
+        }
+      });
+
+      input.addEventListener('focus', function () {
+        this.type = 'text'; // Show when editing
+      });
+    });
+
+    /* Particles Config */
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.3, "random": true },
+        "size": { "value": 3, "random": true },
+        "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.2, "width": 1 },
+        "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": { "onhover": { "enable": true, "mode": "bubble" }, "onclick": { "enable": true, "mode": "push" } },
+        "modes": { "bubble": { "distance": 200, "size": 6, "duration": 2, "opacity": 0.8 } }
+      },
+      "retina_detect": true
+    });
+  </script>
+
+  <!-- Chatbot -->
+  <script src="chatbot.js"></script>
+
+</body>
+
+</html>

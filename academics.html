@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academics - JITS Campus</title>
+    <link rel="icon" type="image/png" href="hostlogo.png" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+
+<body>
+
+    <div id="particles-js"></div>
+
+    <nav class="navbar">
+        <div class="brand">
+            <img src="jits_logo1.png" alt="Logo">
+            <span>JITS Campus</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="academics.html" class="active">Academics</a>
+            <a href="campuslife.html">Campus Life</a>
+            <a href="contact.html">Contact</a>
+            <a href="Login.html"
+                style="background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px;">Login</a>
+        </div>
+    </nav>
+
+    <div class="page-container">
+        <div class="glass-panel">
+            <h1 class="page-title">Academics</h1>
+
+            <h2 class="section-title">Departments</h2>
+            <div class="features-grid" style="padding: 0; margin-bottom: 40px;">
+                <div class="feature-card">
+                    <h3>Computer Science</h3>
+                    <p>Leading-edge curriculum in AI, ML, Data Science, and Software Engineering.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Electronics & Comm.</h3>
+                    <p>Focus on embedded systems, VLSI, and modern communication networks.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Electrical & Electronics</h3>
+                    <p>Comprehensive study of power systems, control systems, and renewable energy.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Mechanical</h3>
+                    <p>Hands-on training in robotics, thermodynamics, and manufacturing technologies.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Academic Calendar</h2>
+            <p class="content-text">
+                Our academic year is divided into two semesters. We follow a rigorous curriculum designed to meet
+                industry standards. Regular internal assessments, lab sessions, and project work ensure holistic
+                learning.
+            </p>
+            <p class="content-text">
+                <strong>Upcoming Events:</strong><br>
+                • Mid-Term Exams: Oct 15 - Oct 20<br>
+                • Tech Fest: Nov 12 - Nov 14<br>
+                • End Semester Exams: Dec 10 - Dec 24
+            </p>
+
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 JITS Campus Management System. All rights reserved.
+    </footer>
+
+    <script>
+        /* Particles Config */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
+                "opacity": { "value": 0.2, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.1, "width": 1 },
+                "move": { "enable": true, "speed": 1 }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { "onhover": { "enable": true, "mode": "repulse" } }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard - JITS</title>
+  <link rel="icon" type="image/png" href="hostlogo.png" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: #0f2027;
+      background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    /* Particle background */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Application Header */
+    .app-header {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      border-radius: 50px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .header-brand img {
+      height: 50px;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+    }
+
+    .header-brand h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #fff, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #dateTime {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    .logout-btn {
+      padding: 8px 20px;
+      background: rgba(255, 59, 59, 0.1);
+      border: 1px solid rgba(255, 59, 59, 0.3);
+      color: #ff6b6b;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 59, 59, 0.2);
+      box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    /* Select Box */
+    .controls-row {
+      margin-bottom: 30px;
+    }
+
+    select {
+      width: 100%;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    select:hover,
+    select:focus {
+      border-color: #4facfe;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Student List */
+    .student-list {
+      max-height: 500px;
+      overflow-y: auto;
+      margin-bottom: 30px;
+      padding-right: 10px;
+    }
+
+    /* Custom Scrollbar */
+    .student-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .student-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .student-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .student-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .student-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+
+    .student-row:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(5px);
+      border-color: rgba(79, 172, 254, 0.3);
+    }
+
+    .student-name {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* Neon Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      transition: .4s;
+      border-radius: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 3px;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: rgba(79, 172, 254, 0.2);
+      border-color: #4facfe;
+      box-shadow: 0 0 10px rgba(79, 172, 254, 0.4);
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(24px);
+      background-color: #4facfe;
+      box-shadow: 0 0 10px #4facfe;
+    }
+
+    /* Submit Button (Live Lighting) */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      background: transparent;
+      transition: 0.3s;
+      z-index: 1;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 300%;
+      height: 100%;
+      background: linear-gradient(90deg,
+          #00c6ff, #0072ff, #00c6ff, #0072ff);
+      transition: all 0.5s ease;
+      z-index: -1;
+      background-size: 200% auto;
+      animation: glowing 3s linear infinite;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(0, 198, 255, 0.6);
+    }
+
+    @keyframes glowing {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+      }
+
+      .container {
+        margin: 20px auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="particles-js"></div>
+
+  <header class="app-header">
+    <div class="header-brand">
+      <img src="jits_logo1.png" alt="JITS Logo">
+      <h1>Mark Attendance</h1>
+    </div>
+    <div class="header-controls">
+      <span id="dateTime"></span>
+      <button class="logout-btn" onclick="goBack()"
+        style="background: rgba(255, 255, 255, 0.1); border-color: rgba(255,255,255,0.2); color: #fff;">Back to
+        Dashboard</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="glass-card">
+      <div class="controls-row">
+        <h2>Select Class Section</h2>
+        <select id="sectionSelect" onchange="renderStudents()">
+          <option value="">-- Select Section --</option>
+          <option value="A Sec">CSE A</option>
+          <option value="B Sec">CSE B</option>
+          <option value="C Sec">CSE C</option>
+        </select>
+      </div>
+
+      <div class="student-list" id="studentList">
+        <!-- Students will be rendered here -->
+        <div style="text-align: center; color: rgba(255,255,255,0.4); padding: 40px;">
+          Please select a class to view student list
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="submitAttendance()">Submit Attendance</button>
+    </div>
+  </div>
+
+  <script>
+    const classStudents = {
+      "A Sec": [
+        "22271A0501 - M.Abhinay", "22271A0502 - Adeeba", "22271A0503 - Afzal", "22271A0504 - Akhil",
+        "22271A0505 - A.Akhila", "22271A0506 - K.Akhila", "22271A0507 - Amaan", "22271A0508 - Anuja",
+        "22271A0509 - Zayyan", "22271A0510 - Chandu", "22271A0511 - Deepika", "22271A0512 - Divya",
+        "22271A0513 - Saba", "22271A0514 - Harthi", "22271A0515 - Jyothi", "22271A0516 - Srija",
+        "22271A0517 - Mahaveen", "22271A0518 - Maheen", "22271A0519 - Manideep", "22271A0520 - Manogna",
+        "22271A0521 - Mayuri", "22271A0522 - Meghana", "22271A0523 - Mercy", "22271A0524 - Palash",
+        "22271A0525 - Parsharam", "22271A0526 - Poojitha", "22271A0527 - Pranavi", "22271A0528 - A.Prashanth",
+        "22271A0529 - B.Prashanth", "22271A0530 - Qadeer", "22271A0531 - Rajya Laxmi", "22271A0532 - Rakesh",
+        "22271A0533 - Sadhvi", "22271A0534 - Chaithanya", "22271A0535 - Shashank", "22271A0536 - Sai Srija",
+        "22271A0538 - Sangeetha", "22271A0539 - Sanjana", "22271A0540 - Sanjitha", "22271A0541 - R.Sathvik",
+        "22271A0542 - K.Shivani", "22271A0543 - Adil", "22271A0544 - S.Sranavi", "22271A0545 - V.Sravani",
+        "22271A0546 - Sidra", "22271A0547 - Siri", "22271A0549 - Spandana", "22271A0550 - SriCharan",
+        "22271A0551 - SriHarshini", "22271A0552 - Srija", "22271A0553 - Srujitha", "22271A0554 - Sumalatha",
+        "22271A0555 - Sushma", "22271A0556 - Umar", "22271A0557 - Vinitha", "22271A0558 - Vignesh",
+        "22271A0559 - Vinay", "22271A0560 - Vishnu", "23275A0501 - Vijay", "23275A0502 - Anusha",
+        "23275A0503 - Zuberia", "23275A0504 - Madhav", "23275A0505 - N.Praveen", "23275A0506 - Nikitha",
+        "23275A0507 - Feroz", "23275A0508 - Ganesh", "23275A0509 - Kalyani", "23275A0518 - Vakya"
+      ]
+    };
+
+    function updateTime() {
+      document.getElementById("dateTime").textContent = new Date().toLocaleString();
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function renderStudents() {
+      const section = document.getElementById("sectionSelect").value;
+      const studentListDiv = document.getElementById("studentList");
+      studentListDiv.innerHTML = "";
+
+      if (!section || !classStudents[section]) {
+        studentListDiv.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.4); padding: 40px;">Please select a class to view student list</div>';
+        return;
+      }
+
+      classStudents[section].forEach((student, index) => {
+        const div = document.createElement("div");
+        div.className = "student-row";
+        div.innerHTML = `
+          <span class="student-name">${student}</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="student-${index}" checked />
+            <span class="slider"></span>
+          </label>
+        `;
+        studentListDiv.appendChild(div);
+      });
+    }
+
+    function submitAttendance() {
+      const section = document.getElementById("sectionSelect").value;
+      if (!section) {
+        alert("Please select a class section.");
+        return;
+      }
+
+      const attendance = {
+        section,
+        dateTime: new Date().toLocaleString(),
+        attendance: []
+      };
+
+      let presentCount = 0;
+      let absentCount = 0;
+
+      classStudents[section].forEach((student, index) => {
+        const isPresent = document.getElementById(`student-${index}`).checked;
+        const status = isPresent ? "Present" : "Absent";
+        if (isPresent) presentCount++;
+        else absentCount++;
+        attendance.attendance.push({ name: student, status });
+      });
+
+      const all = JSON.parse(localStorage.getItem("attendanceRecords") || "[]");
+      all.push(attendance);
+      localStorage.setItem("attendanceRecords", JSON.stringify(all));
+
+      alert(`✅ Attendance submitted successfully!\n\n✅ Present: ${presentCount}\n❌ Absent: ${absentCount}`);
+    }
+
+    function goBack() {
+      window.location.href = "dashboard_teacher.html";
+    }
+
+    /* Particles Config */
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#ffffff" },
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.3, "random": true },
+        "size": { "value": 3, "random": true },
+        "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.2, "width": 1 },
+        "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": { "onhover": { "enable": true, "mode": "bubble" }, "onclick": { "enable": true, "mode": "push" } },
+        "modes": { "bubble": { "distance": 200, "size": 6, "duration": 2, "opacity": 0.8 } }
+      },
+      "retina_detect": true
+    });
+    /* Check User Login */
+    (function checkLogin() {
+      const userStr = localStorage.getItem("loggedInUser");
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        if (user.name) {
+          document.getElementById("welcomeHeader").textContent = `Hi! ${user.name}`;
+        }
+      }
+    })();
+  </script>
+
+  <!-- Chatbot Integration -->
+  <script src="chatbot.js"></script>
+
+</body>
+
+</html>

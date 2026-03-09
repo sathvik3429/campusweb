@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JITS Campus Portal</title>
+  <link rel="icon" type="image/png" href="hostlogo.png" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+
+<body>
+
+  <div id="particles-js"></div>
+
+  <nav class="navbar">
+    <div class="brand">
+      <img src="jits_logo1.png" alt="Logo">
+      <span>JITS Campus</span>
+    </div>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="academics.html">Academics</a>
+      <a href="campuslife.html">Campus Life</a>
+      <a href="contact.html">Contact</a>
+      <a href="Login.html" style="background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px;">Login</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <!-- Floating Background Shapes -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+
+    <div class="hero-content">
+      <h1 class="hero-title">Jyothishmathi Institute of Technological Sciences</h1>
+      <div class="hero-subtitle">Innovation | Excellence | Leadership</div>
+
+      <div class="cta-buttons">
+        <a href="Login.html" class="cta-btn cta-primary">Teacher / HOD Login</a>
+        <a href="about.html" class="cta-btn cta-secondary">Explore Campus</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const subtitle = document.querySelector('.hero-subtitle');
+    subtitle.addEventListener('animationend', () => {
+      subtitle.style.borderRight = 'none';
+    });
+  </script>
+
+  <div class="features-grid" id="about">
+    <div class="feature-card" onclick="window.location.href='about.html'" style="cursor: pointer;">
+      <h3> Innovation</h3>
+      <p>Experience a seamless digital campus with our state-of-the-art management portal designed for efficiency.</p>
+    </div>
+    <div class="feature-card" onclick="window.location.href='academics.html'" style="cursor: pointer;">
+      <h3> Academics</h3>
+      <p>Access attendance records, course materials, and academic schedules in real-time.</p>
+    </div>
+    <div class="feature-card" onclick="window.location.href='campuslife.html'" style="cursor: pointer;">
+      <h3> Campus Life</h3>
+      <p>Stay connected with facility updates, event notifications, and campus news instantly.</p>
+    </div>
+    <div class="feature-card" onclick="window.location.href='contact.html'" style="cursor: pointer;">
+      <h3> Support</h3>
+      <p>Need help? Our chatbot and support team are available 24/7. Email: support@jits.edu</p>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2024 JITS Campus Management System. All rights reserved.
+  </footer>
+
+  <script>
+    let currentRole = "Teacher";
+    const highlight = document.getElementById('highlight');
+    const roleBtns = document.querySelectorAll('.role-btn');
+    const roleLabel = document.getElementById('roleLabel');
+
+    function switchRole(role) {
+      currentRole = role;
+
+      roleBtns.forEach(btn => btn.classList.remove('active'));
+
+      if (role === 'Teacher') {
+        highlight.style.transform = 'translateX(0)';
+        roleBtns[0].classList.add('active');
+        roleLabel.textContent = "Join as Teacher";
+      } else if (role === 'HOD') {
+        highlight.style.transform = 'translateX(100%)';
+        roleBtns[1].classList.add('active');
+        roleLabel.textContent = "Join as HOD";
+      } else {
+        highlight.style.transform = 'translateX(200%)';
+        roleBtns[2].classList.add('active');
+        roleLabel.textContent = "Join as Admin";
+      }
+    }
+
+    function handleSignup(event) {
+      event.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const btn = document.getElementById("submitBtn");
+
+      // Validations
+      if (password.length !== 4 || isNaN(password)) {
+        alert("Please enter a valid 4-digit PIN.");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (users.find(u => u.email === email)) {
+        alert("User already exists! Please login.");
+        window.location.href = "Login.html";
+        return;
+      }
+
+      // Save User
+      users.push({ role: currentRole, name, email, password });
+      localStorage.setItem("users", JSON.stringify(users));
+
+      btn.innerText = "Creating Account...";
+
+      setTimeout(() => {
+        alert(`Welcome to JITS, ${name}! Redirecting to login...`);
+        window.location.href = "Login.html";
+      }, 1000);
+    }
+
+    /* Particles Config */
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+        "color": { "value": "#ffffff" },
+        "opacity": { "value": 0.2, "random": true },
+        "size": { "value": 3, "random": true },
+        "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.1, "width": 1 },
+        "move": { "enable": true, "speed": 1 }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": { "onhover": { "enable": true, "mode": "repulse" } }
+      }
+    });
+  </script>
+
+  <!-- Chatbot Integration -->
+  <script src="chatbot.js"></script>
+
+</body>
+
+</html>

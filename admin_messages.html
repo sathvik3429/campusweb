@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Messages</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #0f2027;
+            background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Particles */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 2;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .brand img {
+            width: 40px;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+        }
+
+        .logout-btn {
+            background: rgba(255, 99, 71, 0.2);
+            color: #ff6347;
+            border: 1px solid rgba(255, 99, 71, 0.4);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 99, 71, 0.4);
+            box-shadow: 0 0 10px rgba(255, 99, 71, 0.3);
+        }
+
+        /* Container */
+        .admin-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            margin-bottom: 30px;
+            font-size: 32px;
+            background: linear-gradient(90deg, #fff, #4facfe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .message-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Message Card */
+        .message-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            transition: transform 0.3s;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(79, 172, 254, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .sender-name {
+            font-weight: 700;
+            font-size: 18px;
+            color: #4facfe;
+        }
+
+        .sender-email {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+
+        .message-date {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .message-body {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+        }
+
+        .delete-btn {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ff6b6b;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="particles-js"></div>
+
+    <header>
+        <div class="brand">
+            <img src="jits_logo1.png" alt="Logo">
+            <span>Admin Dashboard</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span id="adminName" style="color: rgba(255,255,255,0.7); font-size: 14px;">Welcome, Admin</span>
+            <a href="#" onclick="logout()" class="logout-btn">Logout</a>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <h1>Received Messages</h1>
+        <div id="messagesGrid" class="message-grid">
+            <!-- Messages will be injected here -->
+        </div>
+    </div>
+
+    <script>
+        // Check Authentication
+        const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (!loggedInUser || loggedInUser.role !== 'Admin') {
+            alert("Access Denied! Admins only.");
+            window.location.href = "Login.html";
+        } else {
+            document.getElementById('adminName').textContent = `Welcome, ${loggedInUser.name}`;
+            renderMessages();
+        }
+
+        // Render Messages
+        function renderMessages() {
+            const grid = document.getElementById('messagesGrid');
+            const messages = JSON.parse(localStorage.getItem('contactMessages') || "[]");
+
+            if (messages.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3 style="color: rgba(255,255,255,0.5)">No messages received yet.</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = messages.map((msg, index) => `
+                <div class="message-card">
+                    <div class="message-header">
+                        <div>
+                            <div class="sender-name">${msg.name}</div>
+                            <div class="sender-email">${msg.email}</div>
+                        </div>
+                        <div class="message-date">${msg.date}</div>
+                    </div>
+                    <div class="message-body">${msg.message}</div>
+                    <button class="delete-btn" onclick="deleteMessage(${index})">
+                        Delete Message
+                    </button>
+                </div>
+            `).join(''); // Show newest first logic can be added (reverse)
+        }
+
+        // Delete Message
+        function deleteMessage(index) {
+            if (!confirm("Are you sure you want to delete this message?")) return;
+
+            const messages = JSON.parse(localStorage.getItem('contactMessages') || "[]");
+            messages.splice(index, 1);
+            localStorage.setItem('contactMessages', JSON.stringify(messages));
+            renderMessages();
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "index.html";
+        }
+
+        /* Particles Config */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
+                "opacity": { "value": 0.2, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.1, "width": 1 },
+                "move": { "enable": true, "speed": 1 }
+            }
+        });
+    </script>
+</body>
+
+</html>
