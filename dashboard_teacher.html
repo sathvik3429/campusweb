@@ -570,6 +570,50 @@
       }
     }
 
+    /* Notification Toast */
+    .notification-toast {
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.9), rgba(39, 174, 96, 0.9));
+      color: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      z-index: 10000;
+      opacity: 0;
+      transform: translateX(400px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      max-width: 350px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .notification-toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .notification-toast.error {
+      background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.9));
+    }
+
+    .notification-toast h4 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .notification-toast p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+
     /* Responsive */
     @media (max-width: 900px) {
       .dashboard-grid {
@@ -586,6 +630,13 @@
 
       .container {
         margin: 20px auto;
+      }
+
+      .notification-toast {
+        right: 20px;
+        left: 20px;
+        max-width: none;
+        top: 80px;
       }
     }
   </style>
@@ -828,7 +879,7 @@
     function submitAttendance() {
       const section = document.getElementById("sectionSelect").value;
       if (!section) {
-        alert("Please select a class section.");
+        showNotification("Please select a class section.", "error");
         return;
       }
 
@@ -853,11 +904,57 @@
       all.push(attendance);
       localStorage.setItem("attendanceRecords", JSON.stringify(all));
 
-      alert(`✅ Attendance submitted successfully!\n\n✅ Present: ${presentCount}\n❌ Absent: ${absentCount}`);
+      // Show success notification
+      showNotification(`✅ Attendance submitted successfully!\n\n✅ Present: ${presentCount}\n❌ Absent: ${absentCount}`, "success");
+
+      // Clear the student list and reset section selection
+      setTimeout(() => {
+        document.getElementById("sectionSelect").value = "";
+        document.getElementById("studentList").innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.4); padding: 40px;">Please select a class to view student list</div>';
+      }, 2000);
     }
 
     function logout() {
       window.location.href = "index.html";
+    }
+
+    // Notification System
+    function showNotification(message, type = "success") {
+      // Remove any existing notifications
+      const existingToast = document.querySelector('.notification-toast');
+      if (existingToast) {
+        existingToast.remove();
+      }
+
+      // Create notification element
+      const toast = document.createElement('div');
+      toast.className = `notification-toast ${type === 'error' ? 'error' : ''}`;
+      
+      const icon = type === 'error' ? '❌' : '✅';
+      const title = type === 'error' ? 'Error' : 'Success';
+      
+      toast.innerHTML = `
+        <h4>${icon} ${title}</h4>
+        <p>${message}</p>
+      `;
+
+      // Add to body
+      document.body.appendChild(toast);
+
+      // Trigger animation
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 100);
+
+      // Auto remove after 4 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 400);
+      }, 4000);
     }
 
     /* Message Modal Logic */
